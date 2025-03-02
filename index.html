@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MeetingWisdom - Transcription & Summarization</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .help-section {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container my-4">
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <h1>MeetingWisdom</h1>
+        <p class="lead">Real-time meeting transcription, summarization, and insights.</p>
+      </div>
+      
+      <!-- API Key Input -->
+      <div class="row mb-3">
+        <div class="col-sm-3">
+          <label for="apiKeyInput" class="form-label">OpenAI API Key:</label>
+        </div>
+        <div class="col-sm-7">
+          <input type="password" id="apiKeyInput" class="form-control" placeholder="Your API key">
+        </div>
+        <div class="col-sm-2">
+          <button id="setApiKey" class="btn btn-primary w-100">Set API Key</button>
+        </div>
+      </div>
+      
+      <!-- System Prompt Input -->
+      <div class="row mb-3">
+        <div class="col-sm-3">
+          <label for="systemPromptInput" class="form-label">System Prompt:</label>
+        </div>
+        <div class="col-sm-7">
+          <input type="text" id="systemPromptInput" class="form-control" placeholder="E.g., You are a helpful assistant that summarizes text.">
+        </div>
+        <div class="col-sm-2">
+          <button id="setSystemPrompt" class="btn btn-primary w-100">Set Prompt</button>
+        </div>
+      </div>
+      
+      <!-- GPT Model Selection -->
+      <div class="row mb-3">
+        <div class="col-sm-3">
+          <label for="modelSelect" class="form-label">Select GPT Model:</label>
+        </div>
+        <div class="col-sm-7">
+          <select id="modelSelect" class="form-select">
+            <option value="gpt-4o-mini">gpt-4o-mini</option>
+            <option value="gpt-4o">gpt-4o</option>
+            <option value="o1">o1</option>
+            <option value="o1-mini">o1-mini</option>
+            <option value="o3-mini">o3-mini</option>
+            <option value="gpt-4.5-preview">gpt-4.5-preview</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <button id="setModel" class="btn btn-primary w-100">Set Model</button>
+        </div>
+      </div>
+      
+      <!-- Transcription Controls -->
+      <div class="text-center mb-4">
+        <button id="start" class="btn btn-success">Start Transcription</button>
+        <button id="stop" class="btn btn-danger" disabled>Stop Transcription</button>
+        <button id="summarize" class="btn btn-warning" disabled>Summarize</button>
+      </div>
+      
+      <!-- Summary Section -->
+      <h2>Summary</h2>
+      <div id="summary" class="border rounded p-3 mb-4"></div>
+      
+      <!-- Transcription Section -->
+      <h2>Transcription</h2>
+      <div id="transcript" class="border rounded p-3"></div>
+      
+      <!-- Help Section -->
+      <div class="card help-section">
+        <div class="card-header">
+          Help: How to Get Your OpenAI API Key
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            To use the OpenAI API, you'll need an API key. Follow these steps:
+          </p>
+          <ol>
+            <li>
+              <strong>Sign Up / Log In:</strong> Visit the 
+              <a href="https://platform.openai.com/signup" target="_blank">OpenAI Platform</a> and create an account or log in.
+            </li>
+            <li>
+              <strong>Access Your Dashboard:</strong> Once logged in, go to your account dashboard.
+            </li>
+            <li>
+              <strong>Create a New API Key:</strong> In the API keys section, click “Create new secret key” to generate a new key.
+            </li>
+            <li>
+              <strong>Copy and Save:</strong> Copy the generated API key and keep it safe. Paste it into the "OpenAI API Key" input above.
+            </li>
+            <li>
+              <strong>Security Reminder:</strong> Do not share your API key publicly. For production, use a secure backend to proxy your API calls.
+            </li>
+          </ol>
+          <p>
+            Your API key will be stored in your browser's local storage for convenience.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Global variables for API key, system prompt, and GPT model
+      let apiKey = "";
+      let systemPrompt = "You are a helpful assistant that summarizes text.";
+      let gptModel = "gpt-4o-mini"; // default model
+
+      // On page load, check localStorage for saved values
+      window.onload = () => {
+        const storedKey = localStorage.getItem("openai_api_key");
+        if (storedKey) {
+          apiKey = storedKey;
+          document.getElementById("apiKeyInput").value = storedKey;
+          console.log("API key loaded from local storage.");
+        }
+        const storedPrompt = localStorage.getItem("openai_system_prompt");
+        if (storedPrompt) {
+          systemPrompt = storedPrompt;
+          document.getElementById("systemPromptInput").value = storedPrompt;
+          console.log("System prompt loaded from local storage.");
+        } else {
+          document.getElementById("systemPromptInput").value = systemPrompt;
+        }
+        const storedModel = localStorage.getItem("openai_gpt_model");
+        if (storedModel) {
+          gptModel = storedModel;
+          document.getElementById("modelSelect").value = storedModel;
+          console.log("GPT model loaded from local storage.");
+        }
+      };
+
+      // Set API key from input and store it in localStorage
+      document.getElementById("setApiKey").onclick = function() {
+        const inputKey = document.getElementById("apiKeyInput").value;
+        if (inputKey.trim() !== "") {
+          apiKey = inputKey.trim();
+          localStorage.setItem("openai_api_key", apiKey);
+          alert("API Key set and saved locally!");
+        } else {
+          alert("Please enter a valid API key.");
+        }
+      };
+
+      // Set System Prompt from input and store it in localStorage
+      document.getElementById("setSystemPrompt").onclick = function() {
+        const inputPrompt = document.getElementById("systemPromptInput").value;
+        if (inputPrompt.trim() !== "") {
+          systemPrompt = inputPrompt.trim();
+          localStorage.setItem("openai_system_prompt", systemPrompt);
+          alert("System Prompt set and saved locally!");
+        } else {
+          alert("Please enter a valid system prompt.");
+        }
+      };
+
+      // Set GPT Model from select and store it in localStorage
+      document.getElementById("setModel").onclick = function() {
+        const selectedModel = document.getElementById("modelSelect").value;
+        gptModel = selectedModel;
+        localStorage.setItem("openai_gpt_model", gptModel);
+        alert("GPT Model set to " + gptModel + " and saved locally!");
+      };
+
+      // Check for Speech Recognition support (Google Web Speech API)
+      window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!window.SpeechRecognition) {
+          alert("Your browser does not support Speech Recognition. Please use Chrome.");
+      }
+
+      // Configure SpeechRecognition
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      let finalTranscript = "";
+      const transcriptDiv = document.getElementById("transcript");
+      const summaryDiv = document.getElementById("summary");
+
+      recognition.onresult = (event) => {
+        let interimTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript + " ";
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        transcriptDiv.innerHTML = "<p><strong>Final:</strong> " + finalTranscript + "</p>" +
+                                    "<p><em>Interim:</em> " + interimTranscript + "</p>";
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+      };
+
+      // Start and Stop Transcription Controls
+      document.getElementById("start").onclick = () => {
+        finalTranscript = "";
+        transcriptDiv.innerHTML = "";
+        summaryDiv.innerHTML = "";
+        recognition.start();
+        document.getElementById("start").disabled = true;
+        document.getElementById("stop").disabled = false;
+        document.getElementById("summarize").disabled = true;
+      };
+
+      document.getElementById("stop").onclick = () => {
+        recognition.stop();
+        document.getElementById("start").disabled = false;
+        document.getElementById("stop").disabled = true;
+        document.getElementById("summarize").disabled = false;
+      };
+
+      // Call OpenAI API directly from the browser to summarize the transcript
+      async function summarizeTranscript(transcript) {
+        if (apiKey === "") {
+          alert("Please set your OpenAI API key first.");
+          return;
+        }
+        const url = "https://api.openai.com/v1/chat/completions";
+        const data = {
+          model: gptModel,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: "Please summarize the following transcription:\n\n" + transcript }
+          ],
+          temperature: 0.5,
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + apiKey,
+            },
+            body: JSON.stringify(data)
+          });
+          if (!response.ok) {
+            throw new Error("API request failed with status " + response.status);
+          }
+          const result = await response.json();
+          return result.choices[0].message.content.trim();
+        } catch (error) {
+          console.error("Error calling OpenAI API:", error);
+          return "Error summarizing transcription.";
+        }
+      }
+
+      document.getElementById("summarize").onclick = async () => {
+        const summary = await summarizeTranscript(finalTranscript);
+        summaryDiv.innerHTML = "<p>" + summary + "</p>";
+      };
+    </script>
+  </body>
+</html>
