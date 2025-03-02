@@ -5,8 +5,14 @@
     <title>MeetingWisdom - Transcription & Summarization</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      .help-section {
-        margin-top: 20px;
+      .accordion-button:focus {
+        box-shadow: none;
+      }
+      pre {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
       }
     </style>
   </head>
@@ -18,49 +24,133 @@
         <p class="lead">Real-time meeting transcription, summarization, and insights.</p>
       </div>
       
-      <!-- API Key Input -->
-      <div class="row mb-3">
-        <div class="col-sm-3">
-          <label for="apiKeyInput" class="form-label">OpenAI API Key:</label>
+      <!-- Accordion for Settings, Help, and License -->
+      <div class="accordion mb-4" id="mainAccordion">
+        <!-- Settings Panel -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingSettings">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
+              Settings (API Key, System Prompt, & Model Selection)
+            </button>
+          </h2>
+          <div id="collapseSettings" class="accordion-collapse collapse" aria-labelledby="headingSettings" data-bs-parent="#mainAccordion">
+            <div class="accordion-body">
+              <!-- API Key Input -->
+              <div class="row mb-3">
+                <div class="col-sm-4">
+                  <label for="apiKeyInput" class="form-label">OpenAI API Key:</label>
+                </div>
+                <div class="col-sm-5">
+                  <input type="password" id="apiKeyInput" class="form-control" placeholder="Your API key">
+                </div>
+                <div class="col-sm-3">
+                  <button id="setApiKey" class="btn btn-primary w-100">Set API Key</button>
+                </div>
+              </div>
+              
+              <!-- System Prompt Input -->
+              <div class="row mb-3">
+                <div class="col-sm-4">
+                  <label for="systemPromptInput" class="form-label">System Prompt:</label>
+                </div>
+                <div class="col-sm-5">
+                  <input type="text" id="systemPromptInput" class="form-control" placeholder="E.g., You are a helpful assistant that summarizes text.">
+                </div>
+                <div class="col-sm-3">
+                  <button id="setSystemPrompt" class="btn btn-primary w-100">Set Prompt</button>
+                </div>
+              </div>
+              
+              <!-- GPT Model Selection -->
+              <div class="row mb-3">
+                <div class="col-sm-4">
+                  <label for="modelSelect" class="form-label">Select GPT Model:</label>
+                </div>
+                <div class="col-sm-5">
+                  <select id="modelSelect" class="form-select">
+                    <option value="gpt-4o-mini">gpt-4o-mini</option>
+                    <option value="gpt-4o">gpt-4o</option>
+                    <option value="o1">o1</option>
+                    <option value="o1-mini">o1-mini</option>
+                    <option value="o3-mini">o3-mini</option>
+                    <option value="gpt-4.5-preview">gpt-4.5-preview</option>
+                  </select>
+                </div>
+                <div class="col-sm-3">
+                  <button id="setModel" class="btn btn-primary w-100">Set Model</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-sm-7">
-          <input type="password" id="apiKeyInput" class="form-control" placeholder="Your API key">
+        
+        <!-- Help Panel -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingHelp">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHelp" aria-expanded="false" aria-controls="collapseHelp">
+              Help: How to Get Your OpenAI API Key
+            </button>
+          </h2>
+          <div id="collapseHelp" class="accordion-collapse collapse" aria-labelledby="headingHelp" data-bs-parent="#mainAccordion">
+            <div class="accordion-body">
+              <p>To use the OpenAI API, you'll need an API key. Follow these steps:</p>
+              <ol>
+                <li>
+                  <strong>Sign Up / Log In:</strong> Visit the 
+                  <a href="https://platform.openai.com/signup" target="_blank">OpenAI Platform</a> and create an account or log in.
+                </li>
+                <li>
+                  <strong>Access Your Dashboard:</strong> Once logged in, go to your account dashboard.
+                </li>
+                <li>
+                  <strong>Create a New API Key:</strong> In the API keys section, click “Create new secret key” to generate a new key.
+                </li>
+                <li>
+                  <strong>Copy and Save:</strong> Copy the generated API key and keep it safe. Paste it into the "OpenAI API Key" input above.
+                </li>
+                <li>
+                  <strong>Security Reminder:</strong> Do not share your API key publicly. For production, use a secure backend to proxy your API calls.
+                </li>
+              </ol>
+              <p>Your API key will be stored in your browser's local storage for convenience.</p>
+            </div>
+          </div>
         </div>
-        <div class="col-sm-2">
-          <button id="setApiKey" class="btn btn-primary w-100">Set API Key</button>
-        </div>
-      </div>
-      
-      <!-- System Prompt Input -->
-      <div class="row mb-3">
-        <div class="col-sm-3">
-          <label for="systemPromptInput" class="form-label">System Prompt:</label>
-        </div>
-        <div class="col-sm-7">
-          <input type="text" id="systemPromptInput" class="form-control" placeholder="E.g., You are a helpful assistant that summarizes text.">
-        </div>
-        <div class="col-sm-2">
-          <button id="setSystemPrompt" class="btn btn-primary w-100">Set Prompt</button>
-        </div>
-      </div>
-      
-      <!-- GPT Model Selection -->
-      <div class="row mb-3">
-        <div class="col-sm-3">
-          <label for="modelSelect" class="form-label">Select GPT Model:</label>
-        </div>
-        <div class="col-sm-7">
-          <select id="modelSelect" class="form-select">
-            <option value="gpt-4o-mini">gpt-4o-mini</option>
-            <option value="gpt-4o">gpt-4o</option>
-            <option value="o1">o1</option>
-            <option value="o1-mini">o1-mini</option>
-            <option value="o3-mini">o3-mini</option>
-            <option value="gpt-4.5-preview">gpt-4.5-preview</option>
-          </select>
-        </div>
-        <div class="col-sm-2">
-          <button id="setModel" class="btn btn-primary w-100">Set Model</button>
+        
+        <!-- License Panel -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingLicense">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLicense" aria-expanded="false" aria-controls="collapseLicense">
+              License (MIT)
+            </button>
+          </h2>
+          <div id="collapseLicense" class="accordion-collapse collapse" aria-labelledby="headingLicense" data-bs-parent="#mainAccordion">
+            <div class="accordion-body">
+              <pre>
+MIT License
+
+Copyright (c) [Year] [Your Name]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+              </pre>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -78,39 +168,6 @@
       <!-- Transcription Section -->
       <h2>Transcription</h2>
       <div id="transcript" class="border rounded p-3"></div>
-      
-      <!-- Help Section -->
-      <div class="card help-section">
-        <div class="card-header">
-          Help: How to Get Your OpenAI API Key
-        </div>
-        <div class="card-body">
-          <p class="card-text">
-            To use the OpenAI API, you'll need an API key. Follow these steps:
-          </p>
-          <ol>
-            <li>
-              <strong>Sign Up / Log In:</strong> Visit the 
-              <a href="https://platform.openai.com/signup" target="_blank">OpenAI Platform</a> and create an account or log in.
-            </li>
-            <li>
-              <strong>Access Your Dashboard:</strong> Once logged in, go to your account dashboard.
-            </li>
-            <li>
-              <strong>Create a New API Key:</strong> In the API keys section, click “Create new secret key” to generate a new key.
-            </li>
-            <li>
-              <strong>Copy and Save:</strong> Copy the generated API key and keep it safe. Paste it into the "OpenAI API Key" input above.
-            </li>
-            <li>
-              <strong>Security Reminder:</strong> Do not share your API key publicly. For production, use a secure backend to proxy your API calls.
-            </li>
-          </ol>
-          <p>
-            Your API key will be stored in your browser's local storage for convenience.
-          </p>
-        </div>
-      </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
