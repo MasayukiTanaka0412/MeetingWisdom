@@ -160,6 +160,13 @@ SOFTWARE.
         <button id="stop" class="btn btn-danger" disabled>Stop Transcription</button>
         <button id="summarize" class="btn btn-warning" disabled>Summarize</button>
       </div>
+
+      <div class="text-center mb-4">
+        <select id="langSelect" class="form-select">
+          <option value="en-US">en-US</option>
+          <option value="ja-JP">ja-JP</option>
+        </select>
+      </div>
       
       <!-- Summary Section -->
       <h2>Summary</h2>
@@ -243,7 +250,7 @@ SOFTWARE.
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      recognition.lang = document.getElementById("langSelect");.value
 
       let finalTranscript = "";
       const transcriptDiv = document.getElementById("transcript");
