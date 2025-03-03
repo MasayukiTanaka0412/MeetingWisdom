@@ -251,7 +251,7 @@ SOFTWARE.
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = document.getElementById("langSelect").value
+      //recognition.lang = document.getElementById("langSelect").value
 
       let finalTranscript = "";
       const transcriptDiv = document.getElementById("transcript");
@@ -279,6 +279,7 @@ SOFTWARE.
         finalTranscript = "";
         transcriptDiv.innerHTML = "";
         summaryDiv.innerHTML = "";
+        recognition.lang = document.getElementById("langSelect").value
         recognition.start();
         document.getElementById("start").disabled = true;
         document.getElementById("stop").disabled = false;
