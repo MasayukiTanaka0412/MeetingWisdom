@@ -274,14 +274,14 @@ SOFTWARE.
         recognition.start();
         document.getElementById("start").disabled = true;
         document.getElementById("stop").disabled = false;
-        document.getElementById("summarize").disabled = true;
+        //document.getElementById("summarize").disabled = true;
       };
 
       document.getElementById("stop").onclick = () => {
         recognition.stop();
         document.getElementById("start").disabled = false;
         document.getElementById("stop").disabled = true;
-        document.getElementById("summarize").disabled = false;
+        //document.getElementById("summarize").disabled = false;
       };
 
       // Call OpenAI API directly from the browser to summarize the transcript
