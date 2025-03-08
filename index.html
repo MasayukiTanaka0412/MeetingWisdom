@@ -250,10 +250,11 @@ SOFTWARE.
       // Configure SpeechRecognition
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
-      //recognition.interimResults = true;
+      recognition.interimResults = true;
       //recognition.lang = document.getElementById("langSelect").value
 
       let finalTranscript = "";
+      let interimBuffer ="";
       const transcriptDiv = document.getElementById("transcript");
       const summaryDiv = document.getElementById("summary");
 
