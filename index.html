@@ -274,6 +274,11 @@ SOFTWARE.
         console.error("Speech recognition error:", event.error);
       };
 
+      recognition.onend = () => {
+        console.log("Speech recognition ended, restarting...");
+        recognition.start();
+      };
+
       // Start and Stop Transcription Controls
       document.getElementById("start").onclick = () => {
         finalTranscript = "";
