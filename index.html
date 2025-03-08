@@ -254,27 +254,20 @@ SOFTWARE.
       //recognition.lang = document.getElementById("langSelect").value
 
       let finalTranscript = "";
-      let interimBuffer ="";
       const transcriptDiv = document.getElementById("transcript");
       const summaryDiv = document.getElementById("summary");
 
       recognition.onresult = (event) => {
         let interimTranscript = "";
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          // If the result is final, append both the buffered and final words.
           if (event.results[i].isFinal) {
-            // Add the buffered text first (in case it wasn't committed)
-            finalTranscript += interimBuffer + event.results[i][0].transcript + " ";
-            // Clear the buffer since the text is finalized
-            interimBuffer = "";
+            finalTranscript += event.results[i][0].transcript + " ";
           } else {
-            // Keep accumulating interim results in the buffer
-            interimBuffer += event.results[i][0].transcript;
             interimTranscript += event.results[i][0].transcript;
           }
         }
-        transcriptDiv.innerHTML = `<p><strong>Final:</strong> ${finalTranscript}</p>
-                                    <p><em>Interim:</em> ${interimTranscript}</p>`;
+        transcriptDiv.innerHTML = "<p><strong>Final:</strong> " + finalTranscript + "</p>" +
+                                    "<p><em>Interim:</em> " + interimTranscript + "</p>";
       };
 
       recognition.onerror = (event) => {
