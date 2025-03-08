@@ -412,6 +412,8 @@ SOFTWARE.
       }
 
       document.getElementById("summarize").onclick = async () => {
+        alert("Summarizing...");
+        summaryDiv.innerHTML = "";
         const summary = await summarizeTranscript(finalTranscript);
         summaryDiv.innerHTML = "<p>" + summary + "</p>";
       };
