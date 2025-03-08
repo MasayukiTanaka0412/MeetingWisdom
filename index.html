@@ -92,9 +92,6 @@
                   <select id="modelSelect" class="form-select">
                     <option value="gpt-4o-mini">gpt-4o-mini</option>
                     <option value="gpt-4o">gpt-4o</option>
-                    <option value="o1">o1</option>
-                    <option value="o1-mini">o1-mini</option>
-                    <option value="o3-mini">o3-mini</option>
                     <option value="gpt-4.5-preview">gpt-4.5-preview</option>
                   </select>
                 </div>
@@ -180,7 +177,7 @@ SOFTWARE.
       <div class="text-center mb-4">
         <button id="start" class="btn btn-success">Start Transcription</button>
         <button id="stop" class="btn btn-danger" disabled>Stop Transcription</button>
-        <button id="summarize" class="btn btn-warning" disabled>Summarize</button>
+        <button id="summarize" class="btn btn-warning" >Summarize</button>
       </div>
       
       <!-- Side-by-Side Layout for Transcription and Summary -->
@@ -339,14 +336,14 @@ SOFTWARE.
         recognition.start();
         document.getElementById("start").disabled = true;
         document.getElementById("stop").disabled = false;
-        document.getElementById("summarize").disabled = true;
+        //document.getElementById("summarize").disabled = true;
       };
 
       document.getElementById("stop").onclick = () => {
         recognition.stop();
         document.getElementById("start").disabled = false;
         document.getElementById("stop").disabled = true;
-        document.getElementById("summarize").disabled = false;
+        //document.getElementById("summarize").disabled = false;
       };
 
       // Call OpenAI API directly from the browser to summarize the transcript
@@ -362,7 +359,7 @@ SOFTWARE.
             { role: "system", content: systemPrompt },
             { role: "user", content: "Please summarize the following transcription:\n\n" + transcript }
           ],
-          temperature: 0.5,
+          temperature: 0.7,
         };
 
         try {
