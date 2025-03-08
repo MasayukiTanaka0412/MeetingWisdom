@@ -250,7 +250,7 @@ SOFTWARE.
       // Configure SpeechRecognition
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
-      recognition.interimResults = true;
+      //recognition.interimResults = true;
       //recognition.lang = document.getElementById("langSelect").value
 
       let finalTranscript = "";
@@ -275,8 +275,8 @@ SOFTWARE.
       };
 
       recognition.onend = () => {
-        console.log("Speech recognition ended, restarting...");
-        recognition.start();
+        //console.log("Speech recognition ended, restarting...");
+        //recognition.start();
       };
 
       // Start and Stop Transcription Controls
